@@ -1,0 +1,35 @@
+name: Terraform CI/CD Pipeline
+
+
+on: 
+  push:
+    branches:
+      - main # Set the branch name to trigger the workflow on push to the main branch
+
+
+jobs: 
+  terraform:
+    runs-on: ubuntu-latest # Set the runner to ubuntu-latest
+
+
+    steps:
+      - name: checkout code 
+        uses: actions/checkout@v2 # Checkout the code from the repository
+
+      - name: setup Terraform
+        uses: hashicorp/setup-terraform@v1 # Setup Terraform
+        with:
+          terraform_version: 1.0.0 # Set the Terraform version to 1.0.0
+
+      - name: Initialize Terraform
+        run: terraform init # Initialize Terraform
+
+      - name: Validate Terraform configuration 
+        run: terraform validate # Validate the Terraform configuration
+
+      - name: Apply Terraform configuration
+        run: terraform apply -auto-approve # Apply the Terraform configuration
+        env: 
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }} # Set the AWS Access Key ID
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # Set the AWS Secret Access Key
+          AWS_DEFAULT_REGION: us-east-1 # Set the AWS region to us-east-1
